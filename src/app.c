@@ -3,13 +3,31 @@
 #include "app.h"
 
 
-void DrawCubePro(Vector3 pos, float size, Color front, Color back, Color left, Color right, Color top, Color bottom, Color outline, float width) {
+void DrawCubePro(
+    Vector3 pos,
+    Vector3 rotation,
+    float size,
+    Color front,
+    Color back,
+    Color left,
+    Color right,
+    Color top,
+    Color bottom,
+    Color outline,
+    float width
+) {
     float h = size * 0.5f;
     float hi = h - width;
     float epsilon = 0.005f;
 
     rlPushMatrix();
+
+    rlRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+    rlRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+    rlRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+
     rlTranslatef(pos.x, pos.y, pos.z);
+
 
     rlBegin(RL_QUADS);
 
@@ -133,12 +151,12 @@ void DrawCubePro(Vector3 pos, float size, Color front, Color back, Color left, C
 
 Color face_color(face_t face) {
     switch (face) {
-        case FRONT: return CUBE_FRONT;
-        case BACK: return CUBE_BACK;
-        case TOP: return CUBE_TOP;
-        case BOTTOM: return CUBE_BOTTOM;
-        case LEFT: return CUBE_LEFT;
-        case RIGHT: return CUBE_RIGHT;
+        case FACE_FRONT: return CUBE_FRONT;
+        case FACE_BACK: return CUBE_BACK;
+        case FACE_TOP: return CUBE_TOP;
+        case FACE_BOTTOM: return CUBE_BOTTOM;
+        case FACE_LEFT: return CUBE_LEFT;
+        case FACE_RIGHT: return CUBE_RIGHT;
         default: return ColorAlpha(BLACK, 1.0f);
     }
 }
@@ -163,15 +181,30 @@ void draw_cube(cube_t* cube, Vector3 center, float size) {
                     shift.z + z * size,
                 };
 
+                Vector3 rotation = chunk->orient.rotation;
+                if (chunk->orient.animating)
+                {
+                    float t = (float)chunk->orient.frame / (float)chunk->orient.total;
+                    float delta = chunk->orient.delta * t;
+
+                    switch (chunk->orient.axis)
+                    {
+                        case AXIS_X: rotation.x += delta; break;
+                        case AXIS_Y: rotation.y += delta; break;
+                        case AXIS_Z: rotation.z += delta; break;
+                    }
+                }
+
                 DrawCubePro(
                     offset,
+                    rotation,
                     size,
-                    face_color(chunk->faces & FRONT),
-                    face_color(chunk->faces & BACK),
-                    face_color(chunk->faces & LEFT),
-                    face_color(chunk->faces & RIGHT),
-                    face_color(chunk->faces & TOP),
-                    face_color(chunk->faces & BOTTOM),
+                    face_color(chunk->face[FACE_FRONT]),
+                    face_color(chunk->face[FACE_BACK]),
+                    face_color(chunk->face[FACE_LEFT]),
+                    face_color(chunk->face[FACE_RIGHT]),
+                    face_color(chunk->face[FACE_TOP]),
+                    face_color(chunk->face[FACE_BOTTOM]),
                     CUBE_OUTLINE,
                     0.05f
                 );

@@ -19,7 +19,7 @@
 #define CUBE_RIGHT    APP_GREEN
 #define CUBE_OUTLINE  APP_MANTLE
 
-void DrawCubePro(Vector3 pos, float size, Color front, Color back, Color left, Color right, Color top, Color bottom, Color outline, float width);
+void DrawCubePro(Vector3 pos, Vector3 rotation, float size, Color front, Color back, Color left, Color right, Color top, Color bottom, Color outline, float width);
 void draw_cube(cube_t* cube, Vector3 center, float size);
 
 #endif // APP_H
