@@ -44,12 +44,18 @@ int main(void) {
 
     char textBuf[1024];
 
+    face_t prev_face = FACE_NONE;
+
     while (!WindowShouldClose()) {
 
         cube_update(&cube);
 
         if (shuffle.shuffling && !cube.animating) {
-            face_t rand_face = rand() % 6;
+            face_t rand_face = FACE_NONE;
+            while (rand_face == prev_face) {
+                rand_face = rand() % 6;
+            }
+            prev_face = rand_face;
             bool clockwise = rand() % 2;
 
             if (clockwise) {
