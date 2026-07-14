@@ -13,10 +13,10 @@ set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 # Add raylib
 add_subdirectory(external/raylib)
 
+file(GLOB_RECURSE SOURCES src/*.c)
+
 # Your executable
-add_executable(app
-    src/main.c
-)
+add_executable(app ${SOURCES})
 
 target_include_directories(app PRIVATE
     src
