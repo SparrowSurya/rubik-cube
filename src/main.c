@@ -99,7 +99,7 @@ int main(void) {
 
         EndDrawing();
 
-        if (IsKeyPressed(KEY_S) && !shuffle.shuffling) {
+        if (IsKeyPressed(KEY_R) && !shuffle.shuffling) {
             if (IsKeyDown(KEY_LEFT_SHIFT) | IsKeyDown(KEY_RIGHT_SHIFT)) {
                 cube_rotate_anticlockwise(&cube, face);
             } else {
